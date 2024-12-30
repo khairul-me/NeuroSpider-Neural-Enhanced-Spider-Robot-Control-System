@@ -3,7 +3,6 @@
 <div align="center">
   <img src="/api/placeholder/800/400" alt="NeuroSpider Robot" />
 
-  ![Project License](https://img.shields.io/badge/license-MIT-blue.svg)
   ![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
   ![ROS](https://img.shields.io/badge/ROS-Noetic-brightgreen.svg)
   ![Arduino](https://img.shields.io/badge/Arduino-Compatible-blue.svg)
