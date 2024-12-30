@@ -1,0 +1,248 @@
+/*********************************************************************
+ * Spider Robot Motor Control System
+ * 
+ * Description: 
+ * This code controls 6 DC motors using L293D motor drivers for a spider robot.
+ * Each motor can be controlled independently with direction and speed control.
+ * 
+ * Author: Md Khairul Islam
+ * Institution: Hobart and William Smith Colleges, Geneva, NY
+ * Major: Robotics and Computer Science
+ * Contact: khairul.islam@hws.edu
+ * 
+ * Advisor: Chris Fietkiewicz
+ * Email: fietkiewicz@hws.edu
+ * Assistant Professor of Mathematics & Computer Science
+ * 
+ * Last Updated: December 2024
+ *********************************************************************/
+
+/************************* CONSTANTS *************************/
+// Button state constants
+const int IS_PRESSED = LOW;
+const int NOT_PRESSED = HIGH;
+
+/************************* PIN DEFINITIONS *************************/
+// Motor 1 pins
+struct Motor1 {
+    static const int A1 = 2;      // Input pin 1 of L293D
+    static const int A2 = 3;      // Input pin 2 of L293D
+    static const int ENABLE = 4;   // Enable pin of L293D
+    static const int BUTTON = 11;  // Control button
+    static const int LED = 12;     // Status LED
+};
+
+// Motor 2 pins
+struct Motor2 {
+    static const int A1 = 5;
+    static const int A2 = 6;
+    static const int ENABLE = 7;
+    static const int BUTTON = 13;
+    static const int LED = 14;
+};
+
+// Motor 3 pins
+struct Motor3 {
+    static const int A1 = 45;
+    static const int A2 = 46;
+    static const int ENABLE = 44;
+    static const int BUTTON = 15;
+    static const int LED = 16;
+};
+
+// Motor 4 pins
+struct Motor4 {
+    static const int A1 = 17;
+    static const int A2 = 18;
+    static const int ENABLE = 19;
+    static const int BUTTON = 20;
+    static const int LED = 21;
+};
+
+// Motor 5 pins
+struct Motor5 {
+    static const int A1 = 22;
+    static const int A2 = 23;
+    static const int ENABLE = 24;
+    static const int BUTTON = 25;
+    static const int LED = 26;
+};
+
+// Motor 6 pins
+struct Motor6 {
+    static const int A1 = 27;
+    static const int A2 = 28;
+    static const int ENABLE = 29;
+    static const int BUTTON = 30;
+    static const int LED = 31;
+};
+
+// Direction control buttons
+struct DirectionButtons {
+    static const int LEFT = 32;
+    static const int RIGHT = 33;
+};
+
+/************************* MOTOR STATE DEFINITIONS *************************/
+enum MotorState {
+    STOPPED,
+    CLOCKWISE,
+    COUNTER_CLOCKWISE
+};
+
+// Current state of each motor
+MotorState motor1State = STOPPED;
+MotorState motor2State = STOPPED;
+MotorState motor3State = STOPPED;
+MotorState motor4State = STOPPED;
+MotorState motor5State = STOPPED;
+MotorState motor6State = STOPPED;
+
+/************************* SETUP FUNCTION *************************/
+void setup() {
+    // Initialize Motor 1
+    pinMode(Motor1::A1, OUTPUT);
+    pinMode(Motor1::A2, OUTPUT);
+    pinMode(Motor1::ENABLE, OUTPUT);
+    pinMode(Motor1::BUTTON, INPUT_PULLUP);
+    pinMode(Motor1::LED, OUTPUT);
+
+    // Initialize Motor 2
+    pinMode(Motor2::A1, OUTPUT);
+    pinMode(Motor2::A2, OUTPUT);
+    pinMode(Motor2::ENABLE, OUTPUT);
+    pinMode(Motor2::BUTTON, INPUT_PULLUP);
+    pinMode(Motor2::LED, OUTPUT);
+
+    // Initialize Motor 3
+    pinMode(Motor3::A1, OUTPUT);
+    pinMode(Motor3::A2, OUTPUT);
+    pinMode(Motor3::ENABLE, OUTPUT);
+    pinMode(Motor3::BUTTON, INPUT_PULLUP);
+    pinMode(Motor3::LED, OUTPUT);
+
+    // Initialize Motor 4
+    pinMode(Motor4::A1, OUTPUT);
+    pinMode(Motor4::A2, OUTPUT);
+    pinMode(Motor4::ENABLE, OUTPUT);
+    pinMode(Motor4::BUTTON, INPUT_PULLUP);
+    pinMode(Motor4::LED, OUTPUT);
+
+    // Initialize Motor 5
+    pinMode(Motor5::A1, OUTPUT);
+    pinMode(Motor5::A2, OUTPUT);
+    pinMode(Motor5::ENABLE, OUTPUT);
+    pinMode(Motor5::BUTTON, INPUT_PULLUP);
+    pinMode(Motor5::LED, OUTPUT);
+
+    // Initialize Motor 6
+    pinMode(Motor6::A1, OUTPUT);
+    pinMode(Motor6::A2, OUTPUT);
+    pinMode(Motor6::ENABLE, OUTPUT);
+    pinMode(Motor6::BUTTON, INPUT_PULLUP);
+    pinMode(Motor6::LED, OUTPUT);
+
+    // Initialize direction control buttons
+    pinMode(DirectionButtons::LEFT, INPUT_PULLUP);
+    pinMode(DirectionButtons::RIGHT, INPUT_PULLUP);
+}
+
+/************************* MAIN LOOP *************************/
+void loop() {
+    // Update each motor's direction based on button states
+    updateMotorDirection(motor1State, Motor1::BUTTON, Motor1::LED, 
+                        DirectionButtons::LEFT, DirectionButtons::RIGHT, 
+                        Motor1::A1, Motor1::A2, Motor1::ENABLE);
+    
+    updateMotorDirection(motor2State, Motor2::BUTTON, Motor2::LED,
+                        DirectionButtons::LEFT, DirectionButtons::RIGHT,
+                        Motor2::A1, Motor2::A2, Motor2::ENABLE);
+    
+    updateMotorDirection(motor3State, Motor3::BUTTON, Motor3::LED,
+                        DirectionButtons::LEFT, DirectionButtons::RIGHT,
+                        Motor3::A1, Motor3::A2, Motor3::ENABLE);
+    
+    updateMotorDirection(motor4State, Motor4::BUTTON, Motor4::LED,
+                        DirectionButtons::LEFT, DirectionButtons::RIGHT,
+                        Motor4::A1, Motor4::A2, Motor4::ENABLE);
+    
+    updateMotorDirection(motor5State, Motor5::BUTTON, Motor5::LED,
+                        DirectionButtons::LEFT, DirectionButtons::RIGHT,
+                        Motor5::A1, Motor5::A2, Motor5::ENABLE);
+    
+    updateMotorDirection(motor6State, Motor6::BUTTON, Motor6::LED,
+                        DirectionButtons::LEFT, DirectionButtons::RIGHT,
+                        Motor6::A1, Motor6::A2, Motor6::ENABLE);
+}
+
+/************************* HELPER FUNCTIONS *************************/
+/**
+ * Updates the motor direction based on button inputs
+ * 
+ * @param motorState Current state of the motor
+ * @param buttonPin Pin for the motor's control button
+ * @param ledPin Pin for the motor's status LED
+ * @param leftButtonPin Pin for the left direction button
+ * @param rightButtonPin Pin for the right direction button
+ * @param motorPin1 First control pin of the L293D
+ * @param motorPin2 Second control pin of the L293D
+ * @param enablePin Enable pin of the L293D
+ */
+void updateMotorDirection(MotorState& motorState, int buttonPin, int ledPin, 
+                         int leftButtonPin, int rightButtonPin,
+                         int motorPin1, int motorPin2, int enablePin) {
+    // Read button states
+    bool buttonPressed = (digitalRead(buttonPin) == IS_PRESSED);
+    bool leftButtonPressed = (digitalRead(leftButtonPin) == IS_PRESSED);
+    bool rightButtonPressed = (digitalRead(rightButtonPin) == IS_PRESSED);
+
+    // Determine motor state based on button combinations
+    if (buttonPressed && leftButtonPressed && rightButtonPressed) {
+        // All buttons pressed - stop motor
+        motorState = STOPPED;
+        digitalWrite(ledPin, LOW);
+    }
+    else if (buttonPressed && leftButtonPressed) {
+        // Motor button + left button - counter clockwise
+        motorState = COUNTER_CLOCKWISE;
+        digitalWrite(ledPin, HIGH);
+    }
+    else if (buttonPressed && rightButtonPressed) {
+        // Motor button + right button - clockwise
+        motorState = CLOCKWISE;
+        digitalWrite(ledPin, HIGH);
+    }
+    else {
+        // No valid button combination - stop motor
+        motorState = STOPPED;
+        digitalWrite(ledPin, LOW);
+    }
+
+    // Apply the motor state
+    switch (motorState) {
+        case STOPPED:
+            controlMotor(enablePin, motorPin1, motorPin2, 0, true);
+            break;
+        case CLOCKWISE:
+            controlMotor(enablePin, motorPin1, motorPin2, 255, true);
+            break;
+        case COUNTER_CLOCKWISE:
+            controlMotor(enablePin, motorPin1, motorPin2, 255, false);
+            break;
+    }
+}
+
+/**
+ * Controls the motor's speed and direction
+ * 
+ * @param enablePin Enable pin of the L293D
+ * @param motorPin1 First control pin of the L293D
+ * @param motorPin2 Second control pin of the L293D
+ * @param speed Motor speed (0-255)
+ * @param direction true for clockwise, false for counter-clockwise
+ */
+void controlMotor(int enablePin, int motorPin1, int motorPin2, int speed, bool direction) {
+    digitalWrite(motorPin1, direction);
+    digitalWrite(motorPin2, !direction);
+    analogWrite(enablePin, speed);
+}
