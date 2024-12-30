@@ -404,38 +404,13 @@ graph LR
    - Test L293D driver
    - Check LED status
 
-2. **Communication Errors**
-   ```bash
-   # Reset ROS master
-   killall -9 rosmaster
-   roscore
-   
-   # Check serial connection
-   ls -l /dev/ttyACM*
-   ```
-
-3. **Neural Network Issues**
+2. **Neural Network Issues**
    - Verify model loading
    - Check input normalization
    - Monitor GPU memory usage
    - Review training logs
 
-## 👥 Contributing
 
-### Development Process
-1. Fork the repository
-2. Create feature branch
-   ```bash
-   git checkout -b feature/YourFeature
-   ```
-3. Commit changes
-   ```bash
-   git commit -m "Add: your feature description"
-   ```
-4. Push to branch
-   ```bash
-   git push origin feature/YourFeature
-   ```
 5. Create Pull Request
 
 ### Code Style
@@ -464,14 +439,3 @@ graph LR
 - ROS community for development tools
 - Arduino community for hardware support
 - Open-source contributors
-
-## 📄 License
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
-
----
-
-<div align="center">
-  <b>NeuroSpider: Advancing the Future of Bio-inspired Robotics</b>
-  <br>
-  <i>Developed at Hobart and William Smith Colleges</i>
-</div>
